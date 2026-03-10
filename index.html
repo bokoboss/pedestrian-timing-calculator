@@ -34,7 +34,7 @@
             background-color: #4B5563;
         }
         #road-visual {
-            background-color: #4B5563; /* gray-600 */
+            background-color: #4B5563;
             transition: all 0.5s ease-in-out;
             position: relative;
             overflow: hidden;
@@ -45,12 +45,12 @@
             border-bottom: 5px dashed white;
         }
         .center-divider-solid {
-            background-color: #F97316; /* orange-500 */
+            background-color: #F97316;
             min-height: 5px;
             width: 100%;
         }
         .median-island-visual {
-            background-color: #16A34A; /* green-600 */
+            background-color: #16A34A;
             background-image: repeating-linear-gradient(45deg, #15803D, #15803D 10px, #16A34A 10px, #16A34A 20px);
             width: 100%;
             border-top: 2px solid #a3a3a3;
@@ -64,16 +64,15 @@
             flex-direction: column;
             justify-content: space-around;
         }
-        /* -- Styles for Crosswalk & Stop Lines -- */
         #crosswalk-container {
             position: absolute;
             top: 0;
             left: 50%;
-            width: 20%; /* Reduced width of the crosswalk area */
+            width: 20%;
             height: 100%;
             transform: translateX(-50%);
             display: flex;
-            flex-direction: column; /* To stack stripes vertically */
+            flex-direction: column;
             justify-content: space-between;
         }
         .crosswalk-stripe {
@@ -84,36 +83,22 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 5px; /* Vertical line */
+            width: 5px;
             height: 100%;
             background-color: rgba(255, 255, 255, 0.9);
         }
         #stop-line-left {
-            left: calc(50% - 10% - 8px); /* Adjusted for new width */
+            left: calc(50% - 10% - 8px);
         }
         #stop-line-right {
-            right: calc(50% - 10% - 8px); /* Adjusted for new width */
+            right: calc(50% - 10% - 8px);
         }
         .clipped-by-crosswalk {
-            /* This mask creates a transparent hole in the middle */
-            --mask-start: calc(50% - 10% - 5px); /* Stop line position */
-            --mask-end:   calc(50% + 10% + 5px); /* Stop line position */
-            -webkit-mask-image: linear-gradient(to right, 
-                black 0, 
-                black var(--mask-start), 
-                transparent var(--mask-start), 
-                transparent var(--mask-end), 
-                black var(--mask-end), 
-                black 100%);
-            mask-image: linear-gradient(to right, 
-                black 0, 
-                black var(--mask-start), 
-                transparent var(--mask-start), 
-                transparent var(--mask-end), 
-                black var(--mask-end), 
-                black 100%);
+            --mask-start: calc(50% - 10% - 5px);
+            --mask-end:   calc(50% + 10% + 5px);
+            -webkit-mask-image: linear-gradient(to right, black 0, black var(--mask-start), transparent var(--mask-start), transparent var(--mask-end), black var(--mask-end), black 100%);
+            mask-image: linear-gradient(to right, black 0, black var(--mask-start), transparent var(--mask-start), transparent var(--mask-end), black var(--mask-end), black 100%);
         }
-        /* Styles for explanation section */
         details > summary {
             list-style: none;
         }
@@ -123,7 +108,6 @@
         details[open] summary .arrow-down {
             transform: rotate(180deg);
         }
-        /* Animation Styles */
         .collapsible {
             display: grid;
             grid-template-rows: 0fr;
@@ -135,20 +119,28 @@
         .collapsible-content {
             overflow: hidden;
         }
-        /* Unit Button Styles */
-        .unit-btn {
+        .unit-btn, .lang-btn {
             transition: background-color 0.2s, color 0.2s;
         }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 flex items-center justify-center min-h-screen p-4">
 
-    <div class="w-full max-w-6xl bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
-        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6">เครื่องคำนวณระยะเวลาคนเดินข้ามถนน</h1>
+    <div class="w-full max-w-6xl bg-white p-6 sm:p-8 rounded-2xl shadow-lg relative">
+        
+        <!-- Language Toggle -->
+        <div class="absolute top-4 right-4 sm:top-6 sm:right-8 z-10">
+            <div class="inline-flex rounded-md shadow-sm" role="group">
+                <button type="button" id="lang-btn-th" onclick="setLanguage('th')" class="lang-btn rounded-l-lg px-3 py-1.5 text-xs sm:text-sm font-medium border border-blue-600 bg-blue-600 text-white">TH</button>
+                <button type="button" id="lang-btn-en" onclick="setLanguage('en')" class="lang-btn -ml-px rounded-r-lg px-3 py-1.5 text-xs sm:text-sm font-medium border border-gray-200 bg-white text-gray-700 hover:bg-gray-50">EN</button>
+            </div>
+        </div>
+
+        <h1 class="text-2xl sm:text-3xl font-bold text-center text-gray-900 mb-6 pr-16 sm:pr-0" data-i18n="mainTitle">เครื่องคำนวณระยะเวลาคนเดินข้ามถนน</h1>
 
         <!-- Visual Aid -->
         <div class="mb-6">
-            <h3 class="font-bold text-lg mb-2 text-gray-700">ภาพประกอบถนน (ขับชิดซ้าย)</h3>
+            <h3 class="font-bold text-lg mb-2 text-gray-700" data-i18n="visualTitle">ภาพประกอบถนน (ขับชิดซ้าย)</h3>
             <div id="road-visual-container" class="w-full h-32 bg-gray-200 rounded-lg flex items-center justify-center p-2">
                 <div id="road-visual" class="h-full rounded-md shadow-inner" style="width: 80%;">
                     <!-- Visuals generated by JS -->
@@ -159,37 +151,37 @@
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-x-12 gap-y-8">
             <!-- Input Section -->
             <form id="crossing-form" class="lg:col-span-3 space-y-6">
-                <h2 class="text-xl font-bold text-gray-800 border-b pb-2">1. กรอกข้อมูล</h2>
+                <h2 class="text-xl font-bold text-gray-800 border-b pb-2" data-i18n="section1Title">1. กรอกข้อมูล</h2>
                 
                 <!-- Unit Toggle -->
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">หน่วยวัด:</label>
+                    <label class="block text-sm font-medium text-gray-700 mb-2" data-i18n="unitLabel">หน่วยวัด:</label>
                     <div class="inline-flex rounded-md shadow-sm" role="group">
-                        <button type="button" id="unit-btn-meters" data-unit="meters" class="unit-btn rounded-l-lg px-4 py-2 text-sm font-medium border border-gray-200">เมตร</button>
-                        <button type="button" id="unit-btn-feet" data-unit="feet" class="unit-btn -ml-px rounded-r-lg px-4 py-2 text-sm font-medium border border-gray-200">ฟุต</button>
+                        <button type="button" id="unit-btn-meters" data-unit="meters" class="unit-btn rounded-l-lg px-4 py-2 text-sm font-medium border border-blue-600 bg-blue-600 text-white" data-i18n="unitMeters">เมตร</button>
+                        <button type="button" id="unit-btn-feet" data-unit="feet" class="unit-btn -ml-px rounded-r-lg px-4 py-2 text-sm font-medium border border-gray-200 bg-white text-gray-700" data-i18n="unitFeet">ฟุต</button>
                     </div>
                 </div>
 
                 <!-- Road Info Section -->
                 <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
-                    <h3 class="font-semibold text-lg text-gray-800">ข้อมูลถนน</h3>
+                    <h3 class="font-semibold text-lg text-gray-800" data-i18n="roadInfoTitle">ข้อมูลถนน</h3>
                     <!-- Stage 1 & 2 Grid -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <!-- Stage 1 -->
                         <div class="p-3 border rounded-md bg-white space-y-2">
-                            <h4 class="font-semibold text-gray-700">ฝั่งที่ 1 (ฝั่งแรกที่ข้าม)</h4>
+                            <h4 class="font-semibold text-gray-700" data-i18n="stage1Title">ฝั่งที่ 1 (ฝั่งแรกที่ข้าม)</h4>
                             <div class="flex gap-4">
-                                <label class="flex items-center text-xs"><input type="radio" name="stage1-input-type" value="lanes" class="form-radio" checked> <span class="ml-1">ตามจำนวนช่อง</span></label>
-                                <label class="flex items-center text-xs"><input type="radio" name="stage1-input-type" value="direct" class="form-radio"> <span class="ml-1">ระบุความกว้าง</span></label>
+                                <label class="flex items-center text-xs"><input type="radio" name="stage1-input-type" value="lanes" class="form-radio" checked> <span class="ml-1" data-i18n="byLanes">ตามจำนวนช่อง</span></label>
+                                <label class="flex items-center text-xs"><input type="radio" name="stage1-input-type" value="direct" class="form-radio"> <span class="ml-1" data-i18n="byWidth">ระบุความกว้าง</span></label>
                             </div>
                             <div class="collapsible" id="stage1-lanes-wrapper">
                                 <div class="collapsible-content space-y-3 pt-2">
                                     <div>
-                                        <label for="stage1-num-lanes" class="text-sm font-medium text-gray-600">จำนวนช่อง</label>
+                                        <label for="stage1-num-lanes" class="text-sm font-medium text-gray-600" data-i18n="numLanes">จำนวนช่อง</label>
                                         <input type="number" id="stage1-num-lanes" value="2" min="1" step="1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                     <div>
-                                        <label for="stage1-lane-width" class="text-sm font-medium text-gray-600">ความกว้างต่อช่อง (<span class="unit-label">เมตร</span>)</label>
+                                        <label for="stage1-lane-width" class="text-sm font-medium text-gray-600"><span data-i18n="laneWidth">ความกว้างต่อช่อง</span> (<span class="unit-label" data-i18n="unitMeters">เมตร</span>)</label>
                                         <input type="number" id="stage1-lane-width" value="3.5" min="1" step="0.1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                 </div>
@@ -197,31 +189,31 @@
                             <div class="collapsible" id="stage1-direct-wrapper">
                                 <div class="collapsible-content space-y-3 pt-2">
                                     <div>
-                                         <label for="stage1-vis-lanes" class="text-sm font-medium text-gray-600">จำนวนช่อง (สำหรับภาพ)</label>
+                                         <label for="stage1-vis-lanes" class="text-sm font-medium text-gray-600" data-i18n="visualLanes">จำนวนช่อง (สำหรับภาพ)</label>
                                          <input type="number" id="stage1-vis-lanes" value="2" min="1" step="1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                     <div>
-                                         <label for="stage1-width" class="text-sm font-medium text-gray-600">ความกว้างรวม (<span class="unit-label">เมตร</span>)</label>
-                                         <input type="number" id="stage1-width" placeholder="ระบุความกว้างรวม" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
+                                         <label for="stage1-width" class="text-sm font-medium text-gray-600"><span data-i18n="totalWidth">ความกว้างรวม</span> (<span class="unit-label" data-i18n="unitMeters">เมตร</span>)</label>
+                                         <input type="number" id="stage1-width" data-i18n-placeholder="enterWidth" placeholder="ระบุความกว้างรวม" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <!-- Stage 2 -->
                         <div class="p-3 border rounded-md bg-white space-y-2">
-                            <h4 class="font-semibold text-gray-700">ฝั่งที่ 2 (ฝั่งที่สอง)</h4>
+                            <h4 class="font-semibold text-gray-700" data-i18n="stage2Title">ฝั่งที่ 2 (ฝั่งที่สอง)</h4>
                              <div class="flex gap-4">
-                                <label class="flex items-center text-xs"><input type="radio" name="stage2-input-type" value="lanes" class="form-radio" checked> <span class="ml-1">ตามจำนวนช่อง</span></label>
-                                <label class="flex items-center text-xs"><input type="radio" name="stage2-input-type" value="direct" class="form-radio"> <span class="ml-1">ระบุความกว้าง</span></label>
+                                <label class="flex items-center text-xs"><input type="radio" name="stage2-input-type" value="lanes" class="form-radio" checked> <span class="ml-1" data-i18n="byLanes">ตามจำนวนช่อง</span></label>
+                                <label class="flex items-center text-xs"><input type="radio" name="stage2-input-type" value="direct" class="form-radio"> <span class="ml-1" data-i18n="byWidth">ระบุความกว้าง</span></label>
                             </div>
                             <div class="collapsible" id="stage2-lanes-wrapper">
                                 <div class="collapsible-content space-y-3 pt-2">
                                     <div>
-                                        <label for="stage2-num-lanes" class="text-sm font-medium text-gray-600">จำนวนช่อง</label>
+                                        <label for="stage2-num-lanes" class="text-sm font-medium text-gray-600" data-i18n="numLanes">จำนวนช่อง</label>
                                         <input type="number" id="stage2-num-lanes" value="2" min="1" step="1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                     <div>
-                                        <label for="stage2-lane-width" class="text-sm font-medium text-gray-600">ความกว้างต่อช่อง (<span class="unit-label">เมตร</span>)</label>
+                                        <label for="stage2-lane-width" class="text-sm font-medium text-gray-600"><span data-i18n="laneWidth">ความกว้างต่อช่อง</span> (<span class="unit-label" data-i18n="unitMeters">เมตร</span>)</label>
                                         <input type="number" id="stage2-lane-width" value="3.5" min="1" step="0.1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                     </div>
                                 </div>
@@ -229,12 +221,12 @@
                             <div class="collapsible" id="stage2-direct-wrapper">
                                  <div class="collapsible-content space-y-3 pt-2">
                                      <div>
-                                         <label for="stage2-vis-lanes" class="text-sm font-medium text-gray-600">จำนวนช่อง (สำหรับภาพ)</label>
+                                         <label for="stage2-vis-lanes" class="text-sm font-medium text-gray-600" data-i18n="visualLanes">จำนวนช่อง (สำหรับภาพ)</label>
                                          <input type="number" id="stage2-vis-lanes" value="2" min="1" step="1" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                      </div>
                                      <div>
-                                          <label for="stage2-width" class="text-sm font-medium text-gray-600">ความกว้างรวม (<span class="unit-label">เมตร</span>)</label>
-                                          <input type="number" id="stage2-width" placeholder="ระบุความกว้างรวม" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
+                                          <label for="stage2-width" class="text-sm font-medium text-gray-600"><span data-i18n="totalWidth">ความกว้างรวม</span> (<span class="unit-label" data-i18n="unitMeters">เมตร</span>)</label>
+                                          <input type="number" id="stage2-width" data-i18n-placeholder="enterWidth" placeholder="ระบุความกว้างรวม" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                                      </div>
                                  </div>
                             </div>
@@ -246,23 +238,23 @@
                             <input id="median-toggle" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                         </div>
                         <div class="ml-3 text-sm">
-                            <label for="median-toggle" class="font-medium text-gray-700">มีเกาะกลางถนนที่ปลอดภัย</label>
+                            <label for="median-toggle" class="font-medium text-gray-700" data-i18n="hasMedian">มีเกาะกลางถนนที่ปลอดภัย</label>
                         </div>
                     </div>
                 </div>
 
                 <!-- Pedestrian Type -->
                 <div class="space-y-4 p-4 border rounded-lg bg-gray-50">
-                    <h3 class="font-semibold text-lg text-gray-800">ประเภทผู้ข้ามถนน</h3>
+                    <h3 class="font-semibold text-lg text-gray-800" data-i18n="pedTypeTitle">ประเภทผู้ข้ามถนน</h3>
                     <div class="mt-2 space-y-2">
                          <label class="flex items-center"><input name="ped-type" type="radio" value="inclusive" class="form-radio" checked> <span id="ped-inclusive-label" class="ml-2"></span></label>
                          <label class="flex items-center"><input name="ped-type" type="radio" value="general" class="form-radio"> <span id="ped-general-label" class="ml-2"></span></label>
                          <label class="flex items-center"><input name="ped-type" type="radio" value="special" class="form-radio"> <span id="ped-special-label" class="ml-2"></span></label>
-                         <label class="flex items-center"><input name="ped-type" type="radio" value="custom" class="form-radio"> <span class="ml-2">ระบุเอง</span></label>
+                         <label class="flex items-center"><input name="ped-type" type="radio" value="custom" class="form-radio"> <span class="ml-2" data-i18n="customType">ระบุเอง</span></label>
                     </div>
                     <div id="custom-speed-div" class="collapsible">
-                        <div class="collapsible-content pt-2">
-                            <input type="number" id="custom-speed" min="0.1" step="0.1" placeholder="ระบุความเร็ว" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
+                        <div class="collapsible-content pt-2 flex items-center">
+                            <input type="number" id="custom-speed" min="0.1" step="0.1" data-i18n-placeholder="enterSpeed" placeholder="ระบุความเร็ว" class="form-input mt-1 block w-full rounded-md shadow-sm p-2 text-sm">
                             <span id="custom-speed-unit" class="text-sm text-gray-500 ml-2">m/s</span>
                         </div>
                     </div>
@@ -270,12 +262,12 @@
 
                 <!-- Initial Walk Interval -->
                 <div>
-                    <label for="walk-interval" class="block text-sm font-medium text-gray-700 mb-2">เวลาเริ่มต้น (Walk Interval)</label>
+                    <label for="walk-interval" class="block text-sm font-medium text-gray-700 mb-2" data-i18n="walkIntervalTitle">เวลาเริ่มต้น (Walk Interval)</label>
                     <input type="number" id="walk-interval" value="7" min="4" max="7" step="1" class="form-input block w-full rounded-md shadow-sm p-2" required>
                 </div>
                 
                 <div class="pt-4">
-                    <button type="reset" id="reset-btn" class="w-full btn-secondary font-bold py-2 px-4 rounded-lg shadow-md">ล้างค่าทั้งหมด</button>
+                    <button type="reset" id="reset-btn" class="w-full btn-secondary font-bold py-2 px-4 rounded-lg shadow-md" data-i18n="resetBtn">ล้างค่าทั้งหมด</button>
                 </div>
             </form>
 
@@ -283,7 +275,7 @@
             <div class="lg:col-span-2 space-y-8">
                 <!-- Result Section -->
                 <div>
-                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">2. ผลลัพธ์การคำนวณ</h2>
+                    <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4" data-i18n="section2Title">2. ผลลัพธ์การคำนวณ</h2>
                     <div id="result-container" class="bg-blue-50 p-6 rounded-lg space-y-4 text-center">
                         <!-- Results will be injected here -->
                     </div>
@@ -291,21 +283,9 @@
                  
                  <!-- Recommendations -->
                 <div>
-                     <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4">3. คำแนะนำและข้อควรพิจารณา</h2>
-                     <ul class="list-disc list-inside space-y-3 text-sm text-gray-700">
-                         <li>ผลการคำนวณเป็นค่าแนะนำเบื้องต้น ควรพิจารณาร่วมกับมาตรฐานสากลและข้อบัญญัติท้องถิ่น</li>
-                         <li>หากถนนมีเกาะกลางที่ปลอดภัย (กว้างอย่างน้อย 1.8 เมตร หรือ 6 ฟุต) สามารถพิจารณาแบ่งช่วงเวลาข้ามได้</li>
-                         <li>ควรมีการตรวจสอบและเก็บข้อมูลความเร็วในการเดินภาคสนาม เพื่อยืนยันความเหมาะสมของค่าที่ใช้</li>
-                         <li>การออกแบบเพื่อทุกคน (Inclusive Design) เป็นหัวใจสำคัญ ควรพิจารณาความเร็วในการเดินที่ต่ำ (เช่น 0.9 m/s) เพื่อให้ครอบคลุมผู้ใช้งานทุกกลุ่ม</li>
-                         <li>การออกแบบทางกายภาพ เช่น ทางลาดสำหรับรถเข็น และการติดตั้งพื้นผิวต่างสัมผัส (Tactile Paving) เป็นสิ่งสำคัญอย่างยิ่ง</li>
-                         <li><strong>แนวทางจากมาตรฐานสากล:</strong>
-                            <ul class="list-circle list-inside ml-4 mt-1">
-                                <li><strong>MUTCD (สหรัฐฯ):</strong> ใช้ 1.2 m/s เป็นค่าเริ่มต้น</li>
-                                <li><strong>FHWA (สหรัฐฯ):</strong> แนะนำให้ลดลงเหลือ 1.0 m/s ในพื้นที่ที่มีผู้สูงอายุหนาแน่น</li>
-                                <li><strong>UK DfT (สหราชอาณาจักร):</strong> ใช้ 1.0 m/s หรือ 0.8 m/s ในใจกลางเมือง</li>
-                                <li><strong>Austroads (ออสเตรเลีย):</strong> ใช้ 1.0 m/s ทั่วไป และ 0.8 m/s ในใจกลางเมือง</li>
-                            </ul>
-                         </li>
+                     <h2 class="text-xl font-bold text-gray-800 border-b pb-2 mb-4" data-i18n="section3Title">3. คำแนะนำและข้อควรพิจารณา</h2>
+                     <ul class="list-disc list-inside space-y-3 text-sm text-gray-700" id="recommendations-list">
+                         <!-- Injected via JS for translation -->
                      </ul>
                 </div>
             </div>
@@ -315,65 +295,11 @@
         <div class="mt-10 pt-6 border-t col-span-1 lg:col-span-5">
             <details>
                 <summary class="text-xl font-bold text-gray-800 cursor-pointer hover:text-blue-700 flex justify-between items-center">
-                    <span>หลักการและวิธีการคำนวณ</span>
+                    <span data-i18n="theoryTitle">หลักการและวิธีการคำนวณ</span>
                     <svg class="w-6 h-6 arrow-down transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                 </summary>
-                <div class="mt-4 space-y-4 text-gray-700">
-                    <p>เอกสารนี้จัดทำขึ้นเพื่ออธิบายหลักการและที่มาของสูตรที่ใช้ในโปรแกรม เพื่อสร้างความเข้าใจพื้นฐานด้านวิศวกรรมจราจรที่เกี่ยวข้องกับการออกแบบสัญญาณไฟสำหรับคนเดินข้าม</p>
-                    
-                    <h3 class="text-lg font-semibold pt-2 text-gray-800">ภาพรวมของการคำนวณ</h3>
-                    <p>ระยะเวลาทั้งหมดที่คนเดินข้ามถนนต้องการ (Total Crossing Time) ประกอบด้วย 2 ส่วนหลัก คือ <strong>"ช่วงเวลาเดิน (Walk Interval)"</strong> และ <strong>"ช่วงเวลาว่างของผู้ข้าม (Pedestrian Clearance Interval)"</strong></p>
-                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">เวลารวม = WI + PCI</div>
-                    
-                    <h3 class="text-lg font-semibold pt-2 text-gray-800">1. ช่วงเวลาเดิน (Walk Interval: WI)</h3>
-                    <p>คือช่วงที่สัญญาณไฟเขียวรูปคนเดินปรากฏขึ้น เพื่อให้ผู้ข้ามเริ่มเดิน โดยทั่วไปตามมาตรฐานสากลจะกำหนดไว้ระหว่าง <strong>4 ถึง 7 วินาที</strong></p>
-                    
-                    <h3 class="text-lg font-semibold pt-2 text-gray-800">2. ช่วงเวลาว่างของผู้ข้าม (PCI)</h3>
-                    <p>คือช่วงที่สัญญาณไฟรูปคนเดินกะพริบ เพื่อให้คนที่เดินเป็นคนสุดท้ายข้ามไปถึงอีกฝั่งได้ทัน คำนวณจากสูตร:</p>
-                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">PCI = ความกว้างถนน / ความเร็วในการเดิน</div>
-                    <ul class="list-disc list-inside space-y-2 pl-4">
-                        <li><strong>ความกว้างถนน:</strong> ระยะทางทั้งหมดที่ต้องข้าม (เมตร หรือ ฟุต)</li>
-                        <li><strong>ความเร็วในการเดิน:</strong> ใช้ค่าความเร็วของคนที่เดินช้าที่สุดเป็นเกณฑ์เพื่อให้ปลอดภัยสำหรับทุกคน ผลลัพธ์ที่ได้จะถูก **ปัดเศษขึ้น** เสมอ</li>
-                    </ul>
-                    
-                    <div class="mt-4 p-4 border rounded-lg bg-gray-50">
-                        <h4 class="font-semibold text-gray-800 mb-2">ตัวอย่างค่าความเร็วในการเดิน (m/s) สำหรับกลุ่มผู้ใช้งานต่างๆ</h4>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead class="bg-gray-200">
-                                    <tr>
-                                        <th class="p-2">กลุ่มผู้ใช้ถนน</th>
-                                        <th class="p-2">ความเร็วเฉลี่ย (m/s)</th>
-                                        <th class="p-2">อ้างอิง</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="border-b">
-                                        <td class="p-2">คนทั่วไป</td><td class="p-2">1.2</td><td class="p-2">MUTCD</td>
-                                    </tr>
-                                    <tr class="border-b"><td class="p-2">ผู้สูงอายุ</td><td class="p-2">0.8 - 0.9</td><td class="p-2">FHWA, Austroads</td></tr>
-                                    <tr class="border-b"><td class="p-2">ผู้ใช้รถเข็น</td><td class="p-2">0.9</td><td class="p-2">TRB, UK DfT</td></tr>
-                                    <tr class="border-b"><td class="p-2">เด็ก</td><td class="p-2">0.9</td><td class="p-2">AASHTO</td></tr>
-                                    <tr><td class="p-2">ผู้พิการทางสายตา</td><td class="p-2">0.8</td><td class="p-2">US Access Board</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-
-                    <h3 class="text-lg font-semibold pt-2 text-gray-800">ตัวอย่างการคำนวณ</h3>
-                    <p>ถนนกว้าง 14 เมตร, ใช้ความเร็วออกแบบ 0.9 m/s, และ WI = 7 วินาที</p>
-                    <ol class="list-decimal list-inside space-y-2 pl-4 mt-2">
-                        <li><strong>คำนวณหา PCI:</strong>
-                            <div class="bg-gray-100 p-3 my-1 rounded-md text-center text-md font-mono">14 ม. / 0.9 m/s = 15.55 วินาที → ปัดขึ้นเป็น <strong>16 วินาที</strong></div>
-                        </li>
-                        <li><strong>คำนวณหาระยะเวลารวม:</strong>
-                            <div class="bg-gray-100 p-3 my-1 rounded-md text-center text-md font-mono">7 วินาที (WI) + 16 วินาที (PCI) = <strong>23 วินาที</strong></div>
-                        </li>
-                    </ol>
-                    
-                    <h3 class="text-lg font-semibold pt-2 text-gray-800">กรณีมีเกาะกลางถนน</h3>
-                    <p>หากมีเกาะกลางที่ปลอดภัย โปรแกรมจะคำนวณเวลาสำหรับแต่ละช่วงการข้ามแยกกัน เพื่อการจัดการจราจรที่มีประสิทธิภาพยิ่งขึ้น</p>
+                <div class="mt-4 space-y-4 text-gray-700" id="theory-content">
+                    <!-- Injected via JS for translation -->
                 </div>
             </details>
         </div>
@@ -381,6 +307,154 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
+        // --- Translations Dictionary ---
+        const translations = {
+            th: {
+                mainTitle: "เครื่องคำนวณระยะเวลาคนเดินข้ามถนน",
+                visualTitle: "ภาพประกอบถนน (ขับชิดซ้าย)",
+                section1Title: "1. กรอกข้อมูล",
+                unitLabel: "หน่วยวัด:",
+                unitMeters: "เมตร",
+                unitFeet: "ฟุต",
+                roadInfoTitle: "ข้อมูลถนน",
+                stage1Title: "ฝั่งที่ 1 (ฝั่งแรกที่ข้าม)",
+                stage2Title: "ฝั่งที่ 2 (ฝั่งที่สอง)",
+                byLanes: "ตามจำนวนช่อง",
+                byWidth: "ระบุความกว้าง",
+                numLanes: "จำนวนช่อง",
+                laneWidth: "ความกว้างต่อช่อง",
+                visualLanes: "จำนวนช่อง (สำหรับภาพ)",
+                totalWidth: "ความกว้างรวม",
+                enterWidth: "ระบุความกว้างรวม",
+                hasMedian: "มีเกาะกลางถนนที่ปลอดภัย",
+                pedTypeTitle: "ประเภทผู้ข้ามถนน",
+                pedInclusive: "ครอบคลุมทุกคน (ผู้สูงอายุ/เด็ก)",
+                pedGeneral: "ทั่วไป",
+                pedSpecial: "ผู้ที่มีข้อจำกัดพิเศษ (เช่น รถเข็น)",
+                customType: "ระบุเอง",
+                enterSpeed: "ระบุความเร็ว",
+                walkIntervalTitle: "เวลาเริ่มต้น (Walk Interval)",
+                resetBtn: "ล้างค่าทั้งหมด",
+                section2Title: "2. ผลลัพธ์การคำนวณ",
+                section3Title: "3. คำแนะนำและข้อควรพิจารณา",
+                theoryTitle: "หลักการและวิธีการคำนวณ",
+                // Dynamic Result Texts
+                errorPedType: "กรุณาเลือกประเภทผู้ข้ามถนน",
+                errorSpeed: "กรุณากรอกความเร็วให้ถูกต้อง",
+                errorWidth: "กรุณากรอกข้อมูลความกว้างถนนให้ครบถ้วน",
+                speedUsedLabel: "ความเร็วในการเดินที่ใช้",
+                customPedName: "ที่ระบุเอง",
+                stage1Result: "ช่วงที่ 1 (ข้าม {width} {unit}):",
+                stage2Result: "ช่วงที่ 2 (ข้าม {width} {unit}):",
+                totalTimeLabel: "เวลารวม:",
+                seconds: "วินาที",
+                medianSummary: "การข้ามถนนแบบมีเกาะกลางต้องใช้เวลา 2 ช่วง โดยช่วงที่ยาวที่สุดต้องการเวลา {time} วินาที สำหรับผู้ข้ามประเภท '{type}'",
+                totalRequiredLabel: "ระยะเวลาข้ามถนนทั้งหมดที่ต้องการ",
+                normalSummary: "ระยะเวลา {time} วินาทีนี้ เพียงพอสำหรับผู้ข้ามประเภท '{type}' ในการข้ามถนนกว้าง {width} {unit} ได้อย่างปลอดภัย",
+                // Recommendation List
+                rec1: "ผลการคำนวณเป็นค่าแนะนำเบื้องต้น ควรพิจารณาร่วมกับมาตรฐานสากลและข้อบัญญัติท้องถิ่น",
+                rec2: "หากถนนมีเกาะกลางที่ปลอดภัย (กว้างอย่างน้อย 1.8 เมตร หรือ 6 ฟุต) สามารถพิจารณาแบ่งช่วงเวลาข้ามได้",
+                rec3: "ควรมีการตรวจสอบและเก็บข้อมูลความเร็วในการเดินภาคสนาม เพื่อยืนยันความเหมาะสมของค่าที่ใช้",
+                rec4: "การออกแบบเพื่อทุกคน (Inclusive Design) เป็นหัวใจสำคัญ ควรพิจารณาความเร็วในการเดินที่ต่ำ (เช่น 0.9 m/s) เพื่อให้ครอบคลุมผู้ใช้งานทุกกลุ่ม",
+                rec5: "การออกแบบทางกายภาพ เช่น ทางลาดสำหรับรถเข็น และการติดตั้งพื้นผิวต่างสัมผัส (Tactile Paving) เป็นสิ่งสำคัญอย่างยิ่ง",
+                rec6: "<strong>แนวทางจากมาตรฐานสากล:</strong><ul class='list-circle list-inside ml-4 mt-1'><li><strong>MUTCD (สหรัฐฯ):</strong> ใช้ 1.2 m/s เป็นค่าเริ่มต้น</li><li><strong>FHWA (สหรัฐฯ):</strong> แนะนำให้ลดลงเหลือ 1.0 m/s ในพื้นที่ที่มีผู้สูงอายุหนาแน่น</li><li><strong>UK DfT (สหราชอาณาจักร):</strong> ใช้ 1.0 m/s หรือ 0.8 m/s ในใจกลางเมือง</li><li><strong>Austroads (ออสเตรเลีย):</strong> ใช้ 1.0 m/s ทั่วไป และ 0.8 m/s ในใจกลางเมือง</li></ul>",
+                // Theory HTML
+                theoryHTML: `
+                    <p>เอกสารนี้จัดทำขึ้นเพื่ออธิบายหลักการและที่มาของสูตรที่ใช้ในโปรแกรม เพื่อสร้างความเข้าใจพื้นฐานด้านวิศวกรรมจราจรที่เกี่ยวข้องกับการออกแบบสัญญาณไฟสำหรับคนเดินข้าม</p>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">ภาพรวมของการคำนวณ</h3>
+                    <p>ระยะเวลาทั้งหมดที่คนเดินข้ามถนนต้องการ (Total Crossing Time) ประกอบด้วย 2 ส่วนหลัก คือ <strong>"ช่วงเวลาเดิน (Walk Interval)"</strong> และ <strong>"ช่วงเวลาว่างของผู้ข้าม (Pedestrian Clearance Interval)"</strong></p>
+                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">เวลารวม = WI + PCI</div>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">1. ช่วงเวลาเดิน (Walk Interval: WI)</h3>
+                    <p>คือช่วงที่สัญญาณไฟเขียวรูปคนเดินปรากฏขึ้น เพื่อให้ผู้ข้ามเริ่มเดิน โดยทั่วไปตามมาตรฐานสากลจะกำหนดไว้ระหว่าง <strong>4 ถึง 7 วินาที</strong></p>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">2. ช่วงเวลาว่างของผู้ข้าม (PCI)</h3>
+                    <p>คือช่วงที่สัญญาณไฟรูปคนเดินกะพริบ เพื่อให้คนที่เดินเป็นคนสุดท้ายข้ามไปถึงอีกฝั่งได้ทัน คำนวณจากสูตร:</p>
+                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">PCI = ความกว้างถนน / ความเร็วในการเดิน</div>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><strong>ความกว้างถนน:</strong> ระยะทางทั้งหมดที่ต้องข้าม (เมตร หรือ ฟุต)</li>
+                        <li><strong>ความเร็วในการเดิน:</strong> ใช้ค่าความเร็วของคนที่เดินช้าที่สุดเป็นเกณฑ์เพื่อให้ปลอดภัยสำหรับทุกคน ผลลัพธ์ที่ได้จะถูก **ปัดเศษขึ้น** เสมอ</li>
+                    </ul>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">ตัวอย่างการคำนวณ</h3>
+                    <p>ถนนกว้าง 14 เมตร, ใช้ความเร็วออกแบบ 0.9 m/s, และ WI = 7 วินาที</p>
+                    <ol class="list-decimal list-inside space-y-2 pl-4 mt-2">
+                        <li><strong>คำนวณหา PCI:</strong> <span class="bg-gray-100 px-2 py-1 rounded font-mono">14 ม. / 0.9 m/s = 15.55 วิ. → ปัดขึ้นเป็น 16 วิ.</span></li>
+                        <li><strong>คำนวณหาระยะเวลารวม:</strong> <span class="bg-gray-100 px-2 py-1 rounded font-mono">7 วิ. (WI) + 16 วิ. (PCI) = 23 วิ.</span></li>
+                    </ol>
+                `
+            },
+            en: {
+                mainTitle: "Pedestrian Crossing Time Calculator",
+                visualTitle: "Road Visual (Left-hand traffic)",
+                section1Title: "1. Input Data",
+                unitLabel: "Unit:",
+                unitMeters: "Meters",
+                unitFeet: "Feet",
+                roadInfoTitle: "Road Information",
+                stage1Title: "Stage 1 (First crossing)",
+                stage2Title: "Stage 2 (Second crossing)",
+                byLanes: "By Lanes",
+                byWidth: "By Total Width",
+                numLanes: "Number of Lanes",
+                laneWidth: "Lane Width",
+                visualLanes: "Lanes (for visual)",
+                totalWidth: "Total Width",
+                enterWidth: "Enter total width",
+                hasMedian: "Safe Median Available",
+                pedTypeTitle: "Pedestrian Type",
+                pedInclusive: "Inclusive (Elderly/Children)",
+                pedGeneral: "General",
+                pedSpecial: "Special Needs (e.g., wheelchairs)",
+                customType: "Custom Speed",
+                enterSpeed: "Enter speed",
+                walkIntervalTitle: "Walk Interval (Start time)",
+                resetBtn: "Reset All",
+                section2Title: "2. Calculation Results",
+                section3Title: "3. Recommendations & Considerations",
+                theoryTitle: "Principles & Calculation Methods",
+                // Dynamic Result Texts
+                errorPedType: "Please select a pedestrian type.",
+                errorSpeed: "Please enter a valid custom speed.",
+                errorWidth: "Please fill in all required road width data.",
+                speedUsedLabel: "Walking speed used",
+                customPedName: "Custom",
+                stage1Result: "Stage 1 (Cross {width} {unit}):",
+                stage2Result: "Stage 2 (Cross {width} {unit}):",
+                totalTimeLabel: "Total time:",
+                seconds: "seconds",
+                medianSummary: "Crossing with a median requires 2 stages. The longest stage requires {time} seconds for pedestrian type '{type}'.",
+                totalRequiredLabel: "Total Crossing Time Required",
+                normalSummary: "This {time}-second duration is sufficient for pedestrian type '{type}' to safely cross a {width} {unit} wide road.",
+                // Recommendation List
+                rec1: "These results are preliminary recommendations. Always consult international standards and local traffic regulations.",
+                rec2: "If a safe median (refuge island) is available (at least 1.8m or 6ft wide), consider calculating crossing times in two separate stages.",
+                rec3: "Field observations of actual walking speeds should be conducted to verify the appropriateness of the design speed used.",
+                rec4: "Inclusive Design is key. Consider using a lower walking speed (e.g., 0.9 m/s or 3.0 ft/s) to accommodate all user groups.",
+                rec5: "Physical design elements like curb ramps and tactile paving are crucial for a fully accessible pedestrian crossing.",
+                rec6: "<strong>International Standards Guidelines:</strong><ul class='list-circle list-inside ml-4 mt-1'><li><strong>MUTCD (USA):</strong> Uses 1.2 m/s (4.0 ft/s) as standard.</li><li><strong>FHWA (USA):</strong> Recommends 1.0 m/s (3.5 ft/s) where elderly pedestrians are present.</li><li><strong>UK DfT (UK):</strong> Uses 1.0 m/s, or 0.8 m/s in town centers.</li><li><strong>Austroads (Australia):</strong> Uses 1.0 m/s generally, 0.8 m/s in heavily populated areas.</li></ul>",
+                // Theory HTML
+                theoryHTML: `
+                    <p>This document explains the principles and formulas used in the program, providing a basic understanding of traffic engineering related to pedestrian signal design.</p>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">Calculation Overview</h3>
+                    <p>The total time required for a pedestrian to cross (Total Crossing Time) consists of 2 main parts: <strong>"Walk Interval (WI)"</strong> and <strong>"Pedestrian Clearance Interval (PCI)"</strong>.</p>
+                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">Total Time = WI + PCI</div>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">1. Walk Interval (WI)</h3>
+                    <p>The period when the steady walking person signal is displayed, prompting pedestrians to start crossing. International standards typically suggest <strong>4 to 7 seconds</strong>.</p>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">2. Pedestrian Clearance Interval (PCI)</h3>
+                    <p>The period when the flashing hand/person signal is shown. It provides enough time for a pedestrian who stepped off the curb at the very end of the Walk Interval to reach the other side. Formula:</p>
+                    <div class="bg-gray-100 p-4 my-2 rounded-md text-center text-lg font-mono tracking-wide">PCI = Road Width / Walking Speed</div>
+                    <ul class="list-disc list-inside space-y-2 pl-4">
+                        <li><strong>Road Width:</strong> The total crossing distance (Meters or Feet).</li>
+                        <li><strong>Walking Speed:</strong> Use the speed of slower pedestrians to ensure safety for everyone. The calculated PCI result is <strong>always rounded up</strong> to the next whole second.</li>
+                    </ul>
+                    <h3 class="text-lg font-semibold pt-2 text-gray-800">Calculation Example</h3>
+                    <p>Road width: 14 meters, Design speed: 0.9 m/s, and WI = 7 seconds.</p>
+                    <ol class="list-decimal list-inside space-y-2 pl-4 mt-2">
+                        <li><strong>Calculate PCI:</strong> <span class="bg-gray-100 px-2 py-1 rounded font-mono">14 m / 0.9 m/s = 15.55 s → Round up to 16 s.</span></li>
+                        <li><strong>Calculate Total Time:</strong> <span class="bg-gray-100 px-2 py-1 rounded font-mono">7 s (WI) + 16 s (PCI) = 23 seconds.</span></li>
+                    </ol>
+                `
+            }
+        };
+
         // --- DOM Elements ---
         const form = document.getElementById('crossing-form');
         const medianToggle = document.getElementById('median-toggle');
@@ -392,29 +466,88 @@
         const pedTypeRadios = document.querySelectorAll('input[name="ped-type"]');
         const unitBtnMeters = document.getElementById('unit-btn-meters');
         const unitBtnFeet = document.getElementById('unit-btn-feet');
+        
+        // Language Buttons
+        const langBtnTh = document.getElementById('lang-btn-th');
+        const langBtnEn = document.getElementById('lang-btn-en');
 
         // --- State ---
         let currentUnit = 'meters';
+        let currentLang = 'th';
 
         // --- Constants ---
         const walkingSpeeds = {
             meters: { general: 1.2, inclusive: 0.9, special: 0.6 },
             feet: { general: 4.0, inclusive: 3.0, special: 2.0 }
         };
-        const pedLabels = {
-            inclusive: "ครอบคลุมทุกคน (ผู้สูงอายุ/เด็ก)",
-            general: "ทั่วไป",
-            special: "ผู้ที่มีข้อจำกัดพิเศษ (เช่น รถเข็น)"
-        }
         const METER_TO_FEET = 3.28084;
         
+        // Expose setLanguage to global scope for inline onclick handlers
+        window.setLanguage = function(lang) {
+            if (currentLang === lang) return;
+            currentLang = lang;
+            
+            // Update UI toggles
+            if (lang === 'th') {
+                langBtnTh.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                langBtnTh.classList.remove('bg-white', 'text-gray-700', 'border-gray-200', 'hover:bg-gray-50');
+                langBtnEn.classList.add('bg-white', 'text-gray-700', 'border-gray-200', 'hover:bg-gray-50');
+                langBtnEn.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                document.documentElement.lang = 'th';
+            } else {
+                langBtnEn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                langBtnEn.classList.remove('bg-white', 'text-gray-700', 'border-gray-200', 'hover:bg-gray-50');
+                langBtnTh.classList.add('bg-white', 'text-gray-700', 'border-gray-200', 'hover:bg-gray-50');
+                langBtnTh.classList.remove('bg-blue-600', 'text-white', 'border-blue-600');
+                document.documentElement.lang = 'en';
+            }
+
+            applyTranslations();
+            updatePedLabels();
+            calculateAndDisplay(); 
+        };
+
+        function applyTranslations() {
+            const t = translations[currentLang];
+            
+            // Update simple static text via data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.innerHTML = t[key];
+                }
+            });
+
+            // Update placeholders
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) {
+                    el.setAttribute('placeholder', t[key]);
+                }
+            });
+
+            // Update static lists/html blocks
+            document.getElementById('theory-content').innerHTML = t.theoryHTML;
+            
+            const recList = document.getElementById('recommendations-list');
+            recList.innerHTML = `
+                <li>${t.rec1}</li>
+                <li>${t.rec2}</li>
+                <li>${t.rec3}</li>
+                <li>${t.rec4}</li>
+                <li>${t.rec5}</li>
+                <li>${t.rec6}</li>
+            `;
+        }
+
         // --- Initial Setup ---
         setupInputToggle('stage1');
         setupInputToggle('stage2');
         updateUnitButtons();
+        applyTranslations(); // Apply initial TH language
         updatePedLabels();
         updateVisualAid();
-        calculateAndDisplay(); // Initial calculation on load
+        calculateAndDisplay();
 
         // --- Event Listeners ---
         form.addEventListener('input', () => {
@@ -426,13 +559,15 @@
             e.preventDefault();
             form.reset();
             currentUnit = 'meters'; // Reset state
-            // Manually trigger updates after reset
+            
             document.querySelectorAll('input[name="stage1-input-type"]')[0].checked = true;
             document.querySelectorAll('input[name="stage2-input-type"]')[0].checked = true;
             setupInputToggle('stage1'); 
             setupInputToggle('stage2');
             customSpeedDiv.classList.remove('open');
+            
             updateUnitButtons();
+            applyTranslations(); // Restore proper unit labels in current lang
             updatePedLabels();
             updateVisualAid(); 
             calculateAndDisplay();
@@ -442,7 +577,6 @@
         unitBtnFeet.addEventListener('click', () => handleUnitChange('feet'));
 
         // --- Functions ---
-        
         function setupInputToggle(prefix) {
             const radios = document.querySelectorAll(`input[name="${prefix}-input-type"]`);
             const lanesWrapper = document.getElementById(`${prefix}-lanes-wrapper`);
@@ -478,11 +612,17 @@
         }
         
         function updatePedLabels() {
+            const t = translations[currentLang];
             const speedUnit = currentUnit === 'meters' ? 'm/s' : 'ft/s';
-            document.querySelectorAll('.unit-label').forEach(label => label.textContent = currentUnit === 'meters' ? 'เมตร' : 'ฟุต');
-            document.getElementById('ped-inclusive-label').textContent = `${pedLabels.inclusive} (${walkingSpeeds[currentUnit].inclusive.toFixed(1)} ${speedUnit})`;
-            document.getElementById('ped-general-label').textContent = `${pedLabels.general} (${walkingSpeeds[currentUnit].general.toFixed(1)} ${speedUnit})`;
-            document.getElementById('ped-special-label').textContent = `${pedLabels.special} (${walkingSpeeds[currentUnit].special.toFixed(1)} ${speedUnit})`;
+            const unitTextKey = currentUnit === 'meters' ? 'unitMeters' : 'unitFeet';
+            
+            document.querySelectorAll('.unit-label').forEach(label => {
+                label.textContent = t[unitTextKey];
+            });
+            
+            document.getElementById('ped-inclusive-label').textContent = `${t.pedInclusive} (${walkingSpeeds[currentUnit].inclusive.toFixed(1)} ${speedUnit})`;
+            document.getElementById('ped-general-label').textContent = `${t.pedGeneral} (${walkingSpeeds[currentUnit].general.toFixed(1)} ${speedUnit})`;
+            document.getElementById('ped-special-label').textContent = `${t.pedSpecial} (${walkingSpeeds[currentUnit].special.toFixed(1)} ${speedUnit})`;
             document.getElementById('custom-speed-unit').textContent = speedUnit;
         }
 
@@ -497,7 +637,7 @@
                 const width = widthInput ? parseFloat(widthInput.value) || 0 : 0;
                 const lanes = visLanesInput ? parseInt(visLanesInput.value) || 1 : 1;
                 return { width, lanes };
-            } else { // by lanes
+            } else {
                 const numLanesInput = document.getElementById(`${prefix}-num-lanes`);
                 const laneWidthInput = document.getElementById(`${prefix}-lane-width`);
                 const lanes = numLanesInput ? parseInt(numLanesInput.value) || 0 : 0;
@@ -507,12 +647,13 @@
         }
         
         function calculateAndDisplay() {
+            const t = translations[currentLang];
             const isMedian = medianToggle.checked;
             const walkInterval = parseFloat(document.getElementById('walk-interval').value) || 7;
             const pedTypeRadio = document.querySelector('input[name="ped-type"]:checked');
             
             if (!pedTypeRadio) {
-                resultContainer.innerHTML = `<p class="text-yellow-700">กรุณาเลือกประเภทผู้ข้ามถนน</p>`;
+                resultContainer.innerHTML = `<p class="text-yellow-700">${t.errorPedType}</p>`;
                 return;
             }
 
@@ -523,54 +664,64 @@
             if (pedType === 'custom') {
                 speed = parseFloat(customSpeedInput.value) || 0;
                 if (speed <= 0) {
-                    resultContainer.innerHTML = `<p class="text-yellow-700">กรุณากรอกความเร็วให้ถูกต้อง</p>`;
+                    resultContainer.innerHTML = `<p class="text-yellow-700">${t.errorSpeed}</p>`;
                     return;
                 }
-                pedTypeText = 'ที่ระบุเอง';
+                pedTypeText = t.customPedName;
             } else {
                 speed = walkingSpeeds[currentUnit][pedType];
-                pedTypeText = pedLabels[pedType];
+                
+                // Map the radio value back to the translated title
+                if(pedType === 'inclusive') pedTypeText = t.pedInclusive;
+                else if(pedType === 'general') pedTypeText = t.pedGeneral;
+                else if(pedType === 'special') pedTypeText = t.pedSpecial;
             }
             
-            const unitText = currentUnit === 'meters' ? 'เมตร' : 'ฟุต';
+            const unitText = currentUnit === 'meters' ? t.unitMeters : t.unitFeet;
             const speedUnitText = currentUnit === 'meters' ? 'm/s' : 'ft/s';
             
-            let htmlResult = `<p class="text-gray-600">ความเร็วในการเดินที่ใช้: <strong class="text-blue-700 text-lg">${speed.toFixed(1)} ${speedUnitText}</strong></p>`;
+            let htmlResult = `<p class="text-gray-600">${t.speedUsedLabel}: <strong class="text-blue-700 text-lg">${speed.toFixed(1)} ${speedUnitText}</strong></p>`;
 
             const stage1 = getWidthAndLanes('stage1');
             const stage2 = getWidthAndLanes('stage2');
 
             if (isMedian) {
                 if (stage1.width <= 0 || stage2.width <= 0) {
-                    resultContainer.innerHTML = `<p class="text-yellow-700">กรุณากรอกข้อมูลความกว้างถนนให้ครบถ้วน</p>`;
+                    resultContainer.innerHTML = `<p class="text-yellow-700">${t.errorWidth}</p>`;
                     return;
                 }
                 const pci1 = Math.ceil(stage1.width / speed);
                 const total1 = walkInterval + pci1;
                 const pci2 = Math.ceil(stage2.width / speed);
                 const total2 = walkInterval + pci2;
+                
+                const s1Text = t.stage1Result.replace('{width}', stage1.width.toFixed(1)).replace('{unit}', unitText);
+                const s2Text = t.stage2Result.replace('{width}', stage2.width.toFixed(1)).replace('{unit}', unitText);
+                const summaryMed = t.medianSummary.replace('{time}', Math.max(total1, total2)).replace('{type}', pedTypeText);
 
                 htmlResult += `
                     <div class="text-left space-y-3 mt-4">
-                         <div><h4 class="font-bold text-gray-700">ช่วงที่ 1 (ข้าม ${stage1.width.toFixed(1)} ${unitText}):</h4><p class="ml-4">เวลารวม: <strong class="text-blue-700">${total1} วินาที</strong></p></div>
-                         <div><h4 class="font-bold text-gray-700">ช่วงที่ 2 (ข้าม ${stage2.width.toFixed(1)} ${unitText}):</h4><p class="ml-4">เวลารวม: <strong class="text-blue-700">${total2} วินาที</strong></p></div>
+                         <div><h4 class="font-bold text-gray-700">${s1Text}</h4><p class="ml-4">${t.totalTimeLabel} <strong class="text-blue-700">${total1} ${t.seconds}</strong></p></div>
+                         <div><h4 class="font-bold text-gray-700">${s2Text}</h4><p class="ml-4">${t.totalTimeLabel} <strong class="text-blue-700">${total2} ${t.seconds}</strong></p></div>
                     </div>
-                    <p class="text-sm text-gray-700 bg-blue-100 p-3 rounded-md mt-4">การข้ามถนนแบบมีเกาะกลางต้องใช้เวลา 2 ช่วง โดยช่วงที่ยาวที่สุดต้องการเวลา ${Math.max(total1, total2)} วินาที สำหรับผู้ข้ามประเภท "${pedTypeText}"</p>`;
+                    <p class="text-sm text-gray-700 bg-blue-100 p-3 rounded-md mt-4">${summaryMed}</p>`;
             } else {
                 const totalWidth = stage1.width + stage2.width;
                 if (totalWidth <= 0) {
-                     resultContainer.innerHTML = `<p class="text-yellow-700">กรุณากรอกข้อมูลความกว้างถนนให้ครบถ้วน</p>`;
+                     resultContainer.innerHTML = `<p class="text-yellow-700">${t.errorWidth}</p>`;
                      return;
                 }
                 const pci = Math.ceil(totalWidth / speed);
                 const totalTime = walkInterval + pci;
+                
+                const summaryNorm = t.normalSummary.replace('{time}', totalTime).replace('{type}', pedTypeText).replace('{width}', totalWidth.toFixed(1)).replace('{unit}', unitText);
 
                 htmlResult += `
                     <div class="my-4 py-4 border-t border-b border-blue-200">
-                         <p class="text-lg font-semibold text-gray-800">ระยะเวลาข้ามถนนทั้งหมดที่ต้องการ</p>
-                         <p class="text-3xl font-bold text-blue-800">${totalTime} วินาที</p>
+                         <p class="text-lg font-semibold text-gray-800">${t.totalRequiredLabel}</p>
+                         <p class="text-3xl font-bold text-blue-800">${totalTime} ${t.seconds}</p>
                     </div>
-                    <p class="text-sm text-gray-700 bg-blue-100 p-3 rounded-md">ระยะเวลา ${totalTime} วินาทีนี้ เพียงพอสำหรับผู้ข้ามประเภท "${pedTypeText}" ในการข้ามถนนกว้าง ${totalWidth.toFixed(1)} ${unitText} ได้อย่างปลอดภัย</p>`;
+                    <p class="text-sm text-gray-700 bg-blue-100 p-3 rounded-md">${summaryNorm}</p>`;
             }
             
             resultContainer.innerHTML = htmlResult;
@@ -604,9 +755,8 @@
         }
 
         function updateVisualAid() {
-            roadVisual.innerHTML = ''; // Clear previous visual
+            roadVisual.innerHTML = '';
             const isMedian = medianToggle.checked;
-            
             const stage1 = getWidthAndLanes('stage1');
             const stage2 = getWidthAndLanes('stage2');
 
@@ -616,7 +766,6 @@
             stage1Div.style.flexGrow = stage1.lanes;
             stage2Div.style.flexGrow = stage2.lanes;
 
-            // For left-hand traffic, stage 1 is at the top in this column view
             if (stage1.lanes > 0) roadVisual.appendChild(stage1Div);
             
             if (isMedian) {
@@ -631,16 +780,15 @@
 
             if (stage2.lanes > 0) roadVisual.appendChild(stage2Div);
 
-            // --- Add Overlay elements if there are lanes ---
             if (stage1.lanes > 0 || stage2.lanes > 0) {
                 const crosswalkContainer = document.createElement('div');
                 crosswalkContainer.id = 'crosswalk-container';
                 roadVisual.appendChild(crosswalkContainer);
 
                 const stripeCount = 7;
-                const totalSpace = 100; // Represents 100% of the container's height
+                const totalSpace = 100;
                 const stripeAndGapHeight = totalSpace / stripeCount;
-                const stripeHeight = stripeAndGapHeight * 0.7; // Stripe is 70% of the space
+                const stripeHeight = stripeAndGapHeight * 0.7;
                 
                 for (let i = 0; i < stripeCount; i++) {
                     const stripe = document.createElement('div');
@@ -678,11 +826,9 @@
             if (section.childElementCount === 0) {
                  section.innerHTML = '&nbsp;';
             }
-
             return section;
         }
         
-        // Handle custom speed radio button toggle
         pedTypeRadios.forEach(radio => {
             radio.addEventListener('change', (e) => {
                 if(e.target.value === 'custom') {
